@@ -172,17 +172,17 @@ body{
 
 #noResultsMessage{
     display: none;
-    text-align:center;
+    text-align: center;
     font-family: "darkmode-mono-off", sans-serif;
     font-weight: 400;
     font-style: normal;
     font-size: 1rem;
-    position: absolute;
-    top: 38%;
+    position: relative;
+    top: 38vh;
+    left: 0;
     width: 94.8%;
     padding: 2rem;
 }
-
 
 @media only screen and (max-width: 850px) {
     .imagegallery {
@@ -248,5 +248,15 @@ body{
         top: 1rem;
         right: 1rem;
         z-index: 100000;
+    }
+
+    #noResultsMessage{
+        display: none;
+        font-size: 0.6rem;
+        position: relative;
+        top: 38vh;
+        left: 0;
+        width: 90%;
+        padding: 2rem;
     }
 }
