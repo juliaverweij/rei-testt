@@ -253,7 +253,7 @@ body{
     #noResultsMessage{
         display: none;
         font-size: 0.6rem;
-        position: relative;
+        position: fixed;
         top: 30vh;
         left: 0;
         width: 90%;
