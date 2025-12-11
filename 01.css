@@ -299,6 +299,7 @@ svg circle.on {
         max-width: 100%;
         overflow-x: hidden;
         overflow-y: hidden;
+        position: fixed; /* AANGEPASTA */
         padding: 0;
         margin: 0;
     }
@@ -307,7 +308,7 @@ svg circle.on {
         font-size: 0.6rem;
         line-height: 0rem;
         top: auto;
-        bottom: 0.57rem;
+        bottom: 0.58rem;
         left: 42vw;
         display: inline;
         z-index: 9999999;
