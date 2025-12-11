@@ -213,7 +213,7 @@ input:checked{
     position: absolute;
     width: 100%;
     pointer-events: none;
-    --webkit-appearance: none;
+    -webkit-appearance: none;
     background: none;
     margin: 0;
     top: 0.3rem;

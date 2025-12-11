@@ -297,92 +297,65 @@ document.addEventListener("DOMContentLoaded", function() {
   // Apply filters only when button clicked (images filtering)
   var filterBtn = document.getElementById("filterbutton");
   function applyFilter() {
-  const selectedRegions = Array.from(document.querySelectorAll('input[name="region"]:checked'))
-    .map(i => (i.dataset.state || '').split(/\s+/).filter(Boolean))
-    .flat();
-  const selectedPrefectures = Array.from(document.querySelectorAll('input[name="prefecture"]:checked'))
-    .map(i => (i.getAttribute('data-state') || i.value || i.id || '').trim())
-    .filter(Boolean);
-  const selectedArchitects = Array.from(document.querySelectorAll('input[name="architect"]:checked'))
-    .map(i => (i.getAttribute('data-state') || i.value || i.id || '').trim())
-    .filter(Boolean);
+    const selectedRegions = Array.from(document.querySelectorAll('input[name="region"]:checked'))
+        .map(i => (i.dataset.state || '').split(/\s+/).filter(Boolean))
+        .flat();
+    const selectedPrefectures = Array.from(document.querySelectorAll('input[name="prefecture"]:checked'))
+        .map(i => (i.getAttribute('data-state') || i.value || i.id || '').trim())
+        .filter(Boolean);
+    const selectedArchitects = Array.from(document.querySelectorAll('input[name="architect"]:checked'))
+        .map(i => (i.getAttribute('data-state') || i.value || i.id || '').trim())
+        .filter(Boolean);
 
-  // Unknown year checkbox
-  const unknownYearCheckbox = document.querySelector('input[name="UnknownYear"]');
-  const includeUnknownYear = unknownYearCheckbox && unknownYearCheckbox.checked;
+    const unknownYearCheckbox = document.querySelector('input[name="UnknownYear"]');
+    const includeUnknownYear = unknownYearCheckbox && unknownYearCheckbox.checked;
 
-  // Determine year filter if user touched local slider AND slider is active
-  let yearsFilterActive = false;
-  let minYear = null, maxYear = null;
-  try {
-      const minSlider = document.getElementById("yearMinSlider");
-      const maxSlider = document.getElementById("yearMaxSlider");
-      const isActive = minSlider.dataset.active === "true" && maxSlider.dataset.active === "true";
+    const minSlider = document.getElementById("yearMinSlider");
+    const maxSlider = document.getElementById("yearMaxSlider");
+    const yearsFilterActive = minSlider.dataset.active === "true" && maxSlider.dataset.active === "true";
+    const minYear = Number(minSlider.value);
+    const maxYear = Number(maxSlider.value);
 
-      if (isActive && minSlider && maxSlider) {
-        yearsFilterActive = true;
-        minYear = Number(minSlider.value);
-        maxYear = Number(maxSlider.value);
-      }
-  } catch (e) {}
+    const noResultsDiv = document.getElementById('noResultsMessage');
 
-  // If nothing selected (no regions/prefectures/architects) AND no year controls active/checked, hide all images
-  if (
-    selectedRegions.length === 0 &&
-    selectedPrefectures.length === 0 &&
-    selectedArchitects.length === 0 &&
-    !yearsFilterActive &&
-    !includeUnknownYear
-  ) {
-    images.forEach(img => img.style.display = 'none');
-    return; // exit so we don't continue with the loop below
-  }
+    let anyVisible = false; // tracks if at least one image is visible
 
-  // Otherwise, show/hide images according to filters
-  images.forEach(function(img) {
-    const cats = (img.dataset.category || '').split(/\s+/).filter(Boolean);
+    images.forEach(function(img) {
+        const cats = (img.dataset.category || '').split(/\s+/).filter(Boolean);
+        const imgYear = parseImageYear(img);
 
-    const matchesArchitects = selectedArchitects.length === 0 || selectedArchitects.some(a => cats.includes(a));
-    const matchesPrefectures = selectedPrefectures.length === 0 || selectedPrefectures.some(p => cats.includes(p));
-    const matchesRegions = selectedRegions.length === 0 || selectedRegions.some(r => cats.includes(r));
+        const matchesArchitects = selectedArchitects.length === 0 || selectedArchitects.some(a => cats.includes(a));
+        const matchesPrefectures = selectedPrefectures.length === 0 || selectedPrefectures.some(p => cats.includes(p));
+        const matchesRegions = selectedRegions.length === 0 || selectedRegions.some(r => cats.includes(r));
 
-    const imgYear = parseImageYear(img);
-    let matchesYears = true;
+        let matchesYears = true;
+        if (yearsFilterActive && includeUnknownYear) {
+            matchesYears = imgYear === null || (imgYear !== null && imgYear >= minYear && imgYear <= maxYear);
+        } else if (yearsFilterActive) {
+            matchesYears = imgYear !== null && imgYear >= minYear && imgYear <= maxYear;
+        } else if (includeUnknownYear) {
+            matchesYears = imgYear === null;
+        }
 
-    if (yearsFilterActive && includeUnknownYear) {
-      // accept either unknown or in-range known
-      matchesYears = (imgYear === null) || (imgYear !== null && imgYear >= minYear && imgYear <= maxYear);
-    } else if (yearsFilterActive) {
-      // only known years in range
-      matchesYears = (imgYear !== null && imgYear >= minYear && imgYear <= maxYear);
-    } else if (includeUnknownYear) {
-      // only unknown year images
-      matchesYears = (imgYear === null);
-    } else {
-      // neither active: don't restrict by year
-      matchesYears = true;
-    }
+        const showImg = matchesArchitects && matchesPrefectures && matchesYears;
+        img.style.display = showImg ? '' : 'none';
+        if (showImg) anyVisible = true;
+    });
 
+    // Sync map/labels
+    svgPrefectures.forEach(f => f.classList.remove('on'));
+    labelPrefectures.forEach(l => l.classList.remove('on'));
+    [...selectedRegions, ...selectedPrefectures, ...selectedArchitects].forEach(function(id) {
+        const feat = findSvgByPrefecture(id);
+        if (feat) feat.classList.add('on');
+        const lab = findLabelByPrefecture(id);
+        if (lab) lab.classList.add('on');
+    });
 
-    // Final AND logic: all categories must match
-    // if (matchesArchitects && matchesPrefectures && matchesRegions && matchesYears) {
-    if (matchesArchitects && matchesPrefectures && matchesYears) {
-      img.style.display = '';
-    } else {
-      img.style.display = 'none';
-    }
-  });
-
-  // Keep map/labels synced
-  svgPrefectures.forEach(f => f.classList.remove('on'));
-  labelPrefectures.forEach(l => l.classList.remove('on'));
-  [...selectedRegions, ...selectedPrefectures, ...selectedArchitects].forEach(function(id) {
-    const feat = findSvgByPrefecture(id);
-    if (feat) feat.classList.add('on');
-    const lab = findLabelByPrefecture(id);
-    if (lab) lab.classList.add('on');
-  });
+    // Show/hide "no results" message
+    noResultsDiv.style.display = anyVisible ? 'none' : 'block';
 }
+
 
   if (filterBtn) filterBtn.addEventListener("click", function(e) {
     //e.preventDefault();
@@ -512,7 +485,9 @@ document.addEventListener("DOMContentLoaded", function() {
     const restoreUnknownCb = document.querySelector('input[name="UnknownYear"]');
     if (restoreUnknownCb && stored.unknownYear) {
         restoreUnknownCb.checked = true;
-    }     
+    }  
+
+  const noResultsDiv = document.getElementById('noResultsMessage');
 
   if (images.length) {
     if (
@@ -522,8 +497,10 @@ document.addEventListener("DOMContentLoaded", function() {
         !stored.years &&
         !stored.unknownYear
       ) {
-        images.forEach(img => img.style.display = 'none');
+      images.forEach(img => img.style.display = 'none');
+      noResultsDiv.style.display = 'block'; // <-- show message
     } else {
+    noResultsDiv.style.display = 'none'; // <-- hide message if any filter applied
       images.forEach(function(img) {
         const cats = (img.dataset.category || '').split(/\s+/).filter(Boolean);
         const matchesArchitects = !stored.architects || stored.architects.length === 0 || stored.architects.some(a => cats.includes(a));
@@ -555,7 +532,11 @@ document.addEventListener("DOMContentLoaded", function() {
           img.style.display = 'none';
         }
       });
-     // if (typeof applyFilter === 'function') applyFilter();
+      
+      // After showing/hiding images based on stored filters
+      let anyVisible = Array.from(images).some(img => img.style.display !== 'none');
+      noResultsDiv.style.display = anyVisible ? 'none' : 'block';
+
     }
   }
   
@@ -629,6 +610,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
   window.changeSlide = changeSlide;
 });
-
-
-
