@@ -333,12 +333,8 @@ svg circle.on {
       z-index: 3;
       padding: 1rem;
       padding-top: 4rem;
+      padding-bottom: calc(3.4rem + 2rem) !important;
     }
-
-    .navigation > div:last-of-type {
-        margin-bottom: 50%; /* AANGEPASTA */
-    }
-
 
     .navigation.open{
         transform: translateX(0);
