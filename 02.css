@@ -184,6 +184,20 @@ body{
     padding: 2rem;
 }
 
+#noFiltersSelected{
+    display: none;
+    text-align: center;
+    font-family: "darkmode-mono-off", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 1rem;
+    position: relative;
+    top: 38vh;
+    left: 0;
+    width: 94.8%;
+    padding: 2rem;
+}
+
 @media only screen and (max-width: 850px) {
     .imagegallery {
         grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));

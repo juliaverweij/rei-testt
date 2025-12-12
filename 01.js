@@ -352,8 +352,27 @@ document.addEventListener("DOMContentLoaded", function() {
         if (lab) lab.classList.add('on');
     });
 
-    // Show/hide "no results" message
-    noResultsDiv.style.display = anyVisible ? 'none' : 'block';
+    const noFiltersMessage = document.getElementById('noFiltersSelected');
+
+    // Determine if ANY filters are selected
+    const noFiltersSelected =
+        selectedArchitects.length === 0 &&
+        selectedPrefectures.length === 0 &&
+        selectedRegions.length === 0 &&
+        !yearsFilterActive &&
+        !includeUnknownYear;
+
+    // Show correct state
+    if (noFiltersSelected) {
+        noFiltersMessage.style.display = 'block';
+        noResultsDiv.style.display = 'none';
+    } else if (!anyVisible) {
+        noFiltersMessage.style.display = 'none';
+        noResultsDiv.style.display = 'block';
+    } else {
+        noFiltersMessage.style.display = 'none';
+        noResultsDiv.style.display = 'none';
+    }
 }
 
 
@@ -491,15 +510,17 @@ document.addEventListener("DOMContentLoaded", function() {
 
   if (images.length) {
     if (
-        (!stored.regions || stored.regions.length === 0) &&
-        (!stored.prefectures || stored.prefectures.length === 0) &&
-        (!stored.architects || stored.architects.length === 0) &&
-        !stored.years &&
-        !stored.unknownYear
-      ) {
+    (!stored.regions || stored.regions.length === 0) &&
+    (!stored.prefectures || stored.prefectures.length === 0) &&
+    (!stored.architects || stored.architects.length === 0) &&
+    !stored.years &&
+    !stored.unknownYear
+  ) {
+      // NO FILTERS SELECTED → hide images, show correct message
       images.forEach(img => img.style.display = 'none');
-      noResultsDiv.style.display = 'block'; // <-- show message
-    } else {
+      document.getElementById('noFiltersSelected').style.display = 'block';
+      noResultsDiv.style.display = 'none';
+  } else {
     noResultsDiv.style.display = 'none'; // <-- hide message if any filter applied
       images.forEach(function(img) {
         const cats = (img.dataset.category || '').split(/\s+/).filter(Boolean);
@@ -532,10 +553,35 @@ document.addEventListener("DOMContentLoaded", function() {
           img.style.display = 'none';
         }
       });
+
+      // Determine if ANY filters are selected
+      const noFiltersSelected =
+          (!stored.regions || stored.regions.length === 0) &&
+          (!stored.prefectures || stored.prefectures.length === 0) &&
+          (!stored.architects || stored.architects.length === 0) &&
+          !stored.years &&
+          !stored.unknownYear;
+
+      // Determine if ANY image is visible
+      const anyVisible = Array.from(images).some(img => img.style.display !== 'none');
+
+      // Get both messages
+      const noResultsMessage = document.getElementById('noResultsMessage');
+      const noFiltersMessage = document.getElementById('noFiltersSelected');
+
+      // Decide what to show
+      if (noFiltersSelected) {
+          noFiltersMessage.style.display = 'block';
+          noResultsMessage.style.display = 'none';
+      } else if (!anyVisible) {
+          noFiltersMessage.style.display = 'none';
+          noResultsMessage.style.display = 'block';
+      } else {
+          noFiltersMessage.style.display = 'none';
+          noResultsMessage.style.display = 'none';
+      }
+
       
-      // After showing/hiding images based on stored filters
-      let anyVisible = Array.from(images).some(img => img.style.display !== 'none');
-      noResultsDiv.style.display = anyVisible ? 'none' : 'block';
 
     }
   }
