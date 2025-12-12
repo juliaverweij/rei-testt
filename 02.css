@@ -273,4 +273,14 @@ body{
         width: 90%;
         padding: 2rem;
     }
+
+    #noFiltersSelected{
+        display: none;
+        font-size: 0.6rem;
+        position: fixed;
+        top: 30vh;
+        left: 0;
+        width: 90%;
+        padding: 2rem;
+    }
 }
