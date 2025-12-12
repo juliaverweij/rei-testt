@@ -221,7 +221,7 @@ body{
     }
 
     .banner{
-        width: 120vw; /* AANGEPASTA */
+        width: 120vw;
         justify-content: space-between;
     }
 
