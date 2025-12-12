@@ -3,7 +3,7 @@
 body{
     padding: 1.5vh;
     cursor: auto;
-    overflow: hidden;
+    
 }
 
 ::-webkit-scrollbar {
@@ -319,12 +319,13 @@ svg circle.on {
     }
 
     .navigation{
-      position: fixed;
+      position: absolute;
       top: 0;
       left: 0;
       width: 80vw;
       max-width: 320px;
       height: 100%;
+      max-height: 100vh;;
 
       transform: translateX(-100%);
       transition: transform 0.35s ease;
@@ -333,11 +334,16 @@ svg circle.on {
       z-index: 3;
       padding: 1rem;
       padding-top: 4rem;
-      padding-bottom: calc(3.4rem + 2rem) !important;
+
     }
 
     .navigation.open{
         transform: translateX(0);
+    }
+
+    .extraSpace{
+        height: 10rem;
+        flex-shrink: 0;
     }
 
     #sidepanelBackground{
@@ -390,7 +396,7 @@ svg circle.on {
     }
 
     .svg{
-        position: relative;
+        position: fixed;
         width: 140vw;
         top: -10vh;
         left: -5vw;
@@ -400,7 +406,7 @@ svg circle.on {
 
     svg path.on,
     svg circle.on {
-        fill: lightgrey; /* ensure this applies */
+        fill: lightgrey;
     }
 
     svg path, svg circle {
