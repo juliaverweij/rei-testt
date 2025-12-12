@@ -170,20 +170,7 @@ body{
     border: none;
 }
 
-#noResultsMessage{
-    display: none;
-    text-align: center;
-    font-family: "darkmode-mono-off", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-    font-size: 1rem;
-    position: relative;
-    top: 38vh;
-    left: 0;
-    width: 94.8%;
-    padding: 2rem;
-}
-
+#noResultsMessage,
 #noFiltersSelected{
     display: none;
     text-align: center;
@@ -264,23 +251,19 @@ body{
         z-index: 100000;
     }
 
-    #noResultsMessage{
-        display: none;
-        font-size: 0.6rem;
-        position: fixed;
-        top: 30vh;
-        left: 0;
-        width: 90%;
-        padding: 2rem;
-    }
-
+    #noResultsMessage,
     #noFiltersSelected{
         display: none;
         font-size: 0.6rem;
         position: fixed;
-        top: 30vh;
-        left: 0;
-        width: 90%;
-        padding: 2rem;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90vw;
+        max-width: 90vw;
+        word-wrap: break-word;
+        padding: 1rem;
+        box-sizing: border-box;
+        z-index: 99999;
     }
 }
