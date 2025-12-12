@@ -333,9 +333,8 @@ svg circle.on {
       z-index: 3;
       padding: 1rem;
       padding-top: 4rem;
-      margin-bottom: 50%; /* AANGEPASTA */
+      padding-bottom: 20rem; /* AANGEPASTA */
     }
-
 
     .navigation.open{
         transform: translateX(0);
