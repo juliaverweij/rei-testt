@@ -299,10 +299,10 @@ svg circle.on {
         max-width: 100%;
         overflow-x: hidden;
         overflow-y: hidden;
-        position: fixed; /* AANGEPASTA */
         padding: 0;
         margin: 0;
     }
+
 
     .title{
         font-size: 0.6rem;
@@ -333,8 +333,12 @@ svg circle.on {
       z-index: 3;
       padding: 1rem;
       padding-top: 4rem;
-      padding-bottom: 20rem; /* AANGEPASTA */
     }
+
+    .navigation > div:last-of-type {
+        margin-bottom: 50%; /* AANGEPASTA */
+    }
+
 
     .navigation.open{
         transform: translateX(0);
